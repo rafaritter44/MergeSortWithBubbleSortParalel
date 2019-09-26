@@ -32,8 +32,16 @@ void merge_sort(double v[], int n, double temp[]) {
      bubble_sort(v, n);
   else {
      int half = n/2;
-     merge_sort(v, half, temp);
-     merge_sort(v+half, n-half, temp);
+
+     #pragma omp parallel sections
+     {
+        #pragma omp section
+        merge_sort(v, half, temp);
+
+        #pragma omp section
+        merge_sort(v+half, n-half, temp + half);
+     }
+
      merge(v, n, half, temp);
   }
 }
@@ -72,6 +80,6 @@ int main() {
       if (array[i] > array[i+1])
          return 1;
 
-  printf("%lf",elapsed_time);
+  printf("%lf\n",elapsed_time);
   return 0;
 }
