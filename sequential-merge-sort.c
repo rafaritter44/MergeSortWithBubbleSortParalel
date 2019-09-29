@@ -11,11 +11,11 @@ void merge_sort(double v[], int n, double temp[]);
 void merge(double v[], int n, int half, double temp[]);
 
 void bubble_sort(double v[], int n) {
-  int c =0, d, troca, trocou =1;
+  int c = 0, d, troca, trocou = 1;
 
-  while (c < (n-1) && trocou ) {
+  while (c < (n-1) && trocou) {
         trocou = 0;
-        for (d = 0 ; d < n - c - 1; d++) {
+        for (d = 0; d < n-c-1; d++) {
             if (v[d] > v[d+1]) {
                 troca  = v[d];
                 v[d]   = v[d+1];
@@ -32,16 +32,8 @@ void merge_sort(double v[], int n, double temp[]) {
      bubble_sort(v, n);
   else {
      int half = n/2;
-
-     #pragma omp parallel sections
-     {
-        #pragma omp section
-        merge_sort(v, half, temp);
-
-        #pragma omp section
-        merge_sort(v+half, n-half, temp + half);
-     }
-
+     merge_sort(v, half, temp);
+     merge_sort(v+half, n-half, temp + half);
      merge(v, n, half, temp);
   }
 }
@@ -68,18 +60,18 @@ int main() {
   int i;
 
   // INICIALIZA O ARRAY A SER ORDENADO (COM O PIOR CASO)
-  for (i=0 ; i<SIZE; i++)
-      array[i] = (double)SIZE-i;
+  for (i = 0; i < SIZE; i++)
+      array[i] = (double) SIZE - i;
 
   elapsed_time = -omp_get_wtime();
   merge_sort(array, SIZE, temp);    // ORDENA
   elapsed_time += omp_get_wtime();
 
   // VERIFICA SE A ORDENAÇÃO FUNCIONOU
-  for (i=0 ; i<SIZE-1; i++)
+  for (i = 0; i < SIZE-1; i++)
       if (array[i] > array[i+1])
          return 1;
 
-  printf("%lf\n",elapsed_time);
+  printf("%lf\n", elapsed_time);
   return 0;
 }
